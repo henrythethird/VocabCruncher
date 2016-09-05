@@ -2,20 +2,28 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Word;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
     /**
      * @Route("/", name="homepage")
+     * @Template("default/index.html.twig")
      */
-    public function indexAction(Request $request)
+    public function indexAction()
     {
-        // replace this example code with whatever you need
-        return $this->render('default/index.html.twig', [
-            'base_dir' => realpath($this->getParameter('kernel.root_dir').'/..'),
-        ]);
+        $repo = $this->getDoctrine()
+            ->getManager()
+            ->getRepository(Word::class)
+        ;
+
+        $words = $repo->findAll();
+
+        return [
+            'words' => $words
+        ];
     }
 }
