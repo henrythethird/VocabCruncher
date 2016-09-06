@@ -21,8 +21,7 @@ class ImportWordsCommand extends ContainerAwareCommand
         $this
             ->setName('app:import:words')
             ->setDescription('Imports the CC-CEDICT words')
-            ->addArgument('file', InputArgument::REQUIRED, 'The path to the CC-CEDICT file')
-        ;
+            ->addArgument('file', InputArgument::REQUIRED, 'The path to the CC-CEDICT file');
     }
 
     /**
@@ -43,7 +42,9 @@ class ImportWordsCommand extends ContainerAwareCommand
             $line = $open->getCurrentLine();
             $parsedArr = $this->parse(trim($line));
 
-            if (!$parsedArr) continue;
+            if (!$parsedArr) {
+                continue;
+            }
 
             $word = new Word();
 
@@ -58,17 +59,19 @@ class ImportWordsCommand extends ContainerAwareCommand
                 $meaning->setWord($word);
                 $em->persist($meaning);
             }
-            $em->flush();
         }
+        $em->flush();
     }
 
     /**
      * @param string $cedictLine
-     * @return array
+     * @return mixed
      */
     public function parse($cedictLine)
     {
-        if (substr($cedictLine, 0, 1) === '#') return false;
+        if (substr($cedictLine, 0, 1) === '#') {
+            return false;
+        }
 
         $complexSep = stripos($cedictLine, ' ');
         $simplifiedSep = stripos($cedictLine, ' ', $complexSep + 1);
@@ -81,7 +84,7 @@ class ImportWordsCommand extends ContainerAwareCommand
             'complex' => substr($cedictLine, 0, $complexSep),
             'simplified' => substr($cedictLine, $complexSep + 1, $simplifiedSep - $complexSep - 1),
             'pinyin' => substr($cedictLine, $quoteStart + 1, $quoteEnd - $quoteStart - 1),
-            'english' => $translations
+            'english' => $translations,
         ];
     }
 }

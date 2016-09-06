@@ -3,9 +3,11 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Word;
+use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
 {
@@ -15,15 +17,25 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
+        /**
+         * @var EntityRepository $repo
+         */
         $repo = $this->getDoctrine()
             ->getManager()
-            ->getRepository(Word::class)
-        ;
+            ->getRepository(Word::class);
 
         $words = $repo->findAll();
 
         return [
-            'words' => $words
+            'words' => $words,
         ];
+    }
+
+    /**
+     * @Route("/admin/test")
+     */
+    public function adminTestAction(Request $request)
+    {
+        return $request;
     }
 }
