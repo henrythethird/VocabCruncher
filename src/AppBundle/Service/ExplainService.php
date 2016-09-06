@@ -53,6 +53,7 @@ class ExplainService
     }
 
     /**
+     * Returns the length of the longest matched multibyte string
      * @param $string
      * @param $position
      * @param $returnArray

@@ -32,6 +32,14 @@ class DefaultController extends Controller
     }
 
     /**
+     * @Route("/", name="")
+     */
+    public function ajaxExplain()
+    {
+
+    }
+
+    /**
      * @Route("/admin/test")
      */
     public function adminTestAction(Request $request)

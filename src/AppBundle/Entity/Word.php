@@ -44,9 +44,17 @@ class Word
      */
     private $meanings;
 
+    /**
+     * @ORM\OneToMany(targetEntity="SentenceIndex", mappedBy="word", cascade={"persist"})
+     * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var ArrayCollection
+     */
+    private $sentenceIndexes;
+
     public function __construct()
     {
         $this->meanings = new ArrayCollection();
+        $this->sentenceIndexes = new ArrayCollection();
     }
 
     /**
@@ -111,5 +119,21 @@ class Word
     public function setMeanings($meanings)
     {
         $this->meanings = $meanings;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getSentenceIndexes()
+    {
+        return $this->sentenceIndexes;
+    }
+
+    /**
+     * @param ArrayCollection $sentenceIndexes
+     */
+    public function setSentenceIndexes($sentenceIndexes)
+    {
+        $this->sentenceIndexes = $sentenceIndexes;
     }
 }

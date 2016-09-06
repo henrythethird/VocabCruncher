@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -32,8 +33,14 @@ class Sentence
     /**
      * @ORM\OneToMany(targetEntity="SentenceIndex", mappedBy="sentence", orphanRemoval=true, cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
+     * @var ArrayCollection
      */
     private $indexes;
+
+    public function __construct()
+    {
+        $this->indexes = new ArrayCollection();
+    }
 
     /**
      * @return string
@@ -65,5 +72,21 @@ class Sentence
     public function setMandarin($mandarin)
     {
         $this->mandarin = $mandarin;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getIndexes()
+    {
+        return $this->indexes;
+    }
+
+    /**
+     * @param ArrayCollection $indexes
+     */
+    public function setIndexes($indexes)
+    {
+        $this->indexes = $indexes;
     }
 }

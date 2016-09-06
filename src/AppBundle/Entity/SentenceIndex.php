@@ -25,6 +25,13 @@ class SentenceIndex
     private $sentence;
 
     /**
+     * @ORM\ManyToOne(targetEntity="Word", inversedBy="sentenceIndexes")
+     * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
+     * @var Word
+     */
+    private $word;
+
+    /**
      * @ORM\Column(type="integer")
      * @var $index
      */
@@ -60,5 +67,21 @@ class SentenceIndex
     public function setIndex($index)
     {
         $this->index = $index;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWord()
+    {
+        return $this->word;
+    }
+
+    /**
+     * @param mixed $word
+     */
+    public function setWord($word)
+    {
+        $this->word = $word;
     }
 }
