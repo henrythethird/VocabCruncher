@@ -5,8 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @Doctrine\ORM\Mapping\Entity
- * @Doctrine\ORM\Mapping\Table(name="meaning")
+ * @ORM\Entity
+ * @ORM\Table(
+ *     indexes={
+ *          @ORM\Index(name="meaning_idx", columns={"meaning", "id"})
+ *     }
+ * )
  */
 class Meaning
 {

@@ -2,14 +2,16 @@
 
 namespace AppBundle\Repository;
 
+use AppBundle\Entity\Word;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
 
 class WordRepository extends EntityRepository
 {
+    const MAX_SEARCH_RESULTS = 20;
+
     /**
-     * @param string $searchTerm
-     * @return int
+     * @param $searchTerm
+     * @return Word|null
      */
     public function findOneBySimpleOrComplex($searchTerm)
     {
@@ -22,14 +24,35 @@ class WordRepository extends EntityRepository
             ->getOneOrNullResult();
     }
 
-    public function dictionarySearch($searchTerm)
+    /**
+     * @param $searchTerm
+     * @return array
+     */
+    public function dictionarySearchChinese($searchTerm)
     {
         return $this->createQueryBuilder("word")
             ->where("word.simple LIKE :searchTerm")
             ->orWhere("word.complex LIKE :searchTerm")
-            ->orWhere("word.pinyin LIKE :searchTerm")
-            ->setParameter("searchTerm", $searchTerm)
-            ->setMaxResults(20)
+            ->orWhere("word.pinyinAbbr LIKE :searchTerm")
+            ->orderBy("word.simple", 'DESC')
+            ->addOrderBy("word.simple")
+            ->setParameter("searchTerm", "$searchTerm%")
+            ->setMaxResults(self::MAX_SEARCH_RESULTS)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * @param $searchTerm
+     * @return array
+     */
+    public function dictionarySearchEnglish($searchTerm)
+    {
+        return $this->createQueryBuilder("word")
+            ->leftJoin("word.meanings", "meaning")
+            ->where("meaning.meaning LIKE :searchTerm")
+            ->setParameter("searchTerm", "%$searchTerm%")
+            ->setMaxResults(self::MAX_SEARCH_RESULTS)
             ->getQuery()
             ->getResult();
     }

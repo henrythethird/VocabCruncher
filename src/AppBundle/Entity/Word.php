@@ -2,9 +2,9 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Util\PinyinUtil;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Mapping\Index;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WordRepository")
@@ -12,9 +12,12 @@ use Doctrine\ORM\Mapping\Index;
  *     indexes={
  *          @ORM\Index(name="simple_idx", columns={"simple"}),
  *          @ORM\Index(name="complex_idx", columns={"complex"}),
- *          @ORM\Index(name="pinyin", columns={"pinyin"})
+ *          @ORM\Index(name="pinyin_idx", columns={"pinyin"}),
+ *          @ORM\Index(name="pinyin_abbr_idx", columns={"pinyin_abbr"}),
+ *          @ORM\Index(name="composite_idx", columns={"simple", "complex", "pinyin_abbr"})
  *     }
  * )
+ * @ORM\HasLifecycleCallbacks()
  */
 class Word
 {
@@ -43,6 +46,12 @@ class Word
      * @var string
      */
     private $pinyin;
+
+    /**
+     * @ORM\Column(type="string")
+     * @var string
+     */
+    private $pinyinAbbr;
 
     /**
      * @ORM\OneToMany(targetEntity="Meaning", mappedBy="word", cascade={"persist"})
@@ -113,6 +122,14 @@ class Word
     }
 
     /**
+     * @return mixed
+     */
+    public function getPinyinAbbr()
+    {
+        return $this->pinyinAbbr;
+    }
+
+    /**
      * @return ArrayCollection
      */
     public function getMeanings()
@@ -142,5 +159,14 @@ class Word
     public function setSentenceIndexes($sentenceIndexes)
     {
         $this->sentenceIndexes = $sentenceIndexes;
+    }
+
+    /**
+     * @ORM\PreFlush()
+     */
+    public function preFlush()
+    {
+        $pinyinUtil = new PinyinUtil();
+        $this->pinyinAbbr = $pinyinUtil->fromNumberToPlain($this->pinyin);
     }
 }
