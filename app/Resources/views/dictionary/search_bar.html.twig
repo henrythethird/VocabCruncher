@@ -1,0 +1,11 @@
+<p>Enter your search term:</p>
+<form method="get" action="{{ path('dictionary_search') }}">
+    <div class="input-group">
+        <input class="form-control" placeholder="Enter your search term" name="q">
+        <span class="input-group-btn">
+            <button class="btn btn-default" type="submit">
+                <span class="glyphicon glyphicon-search"></span> Search
+            </button>
+        </span>
+    </div>
+</form>

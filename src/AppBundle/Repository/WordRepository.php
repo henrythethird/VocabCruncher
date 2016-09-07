@@ -3,6 +3,7 @@
 namespace AppBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 
 class WordRepository extends EntityRepository
 {
@@ -19,5 +20,17 @@ class WordRepository extends EntityRepository
             ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
+    }
+
+    public function dictionarySearch($searchTerm)
+    {
+        return $this->createQueryBuilder("word")
+            ->where("word.simple LIKE :searchTerm")
+            ->orWhere("word.complex LIKE :searchTerm")
+            ->orWhere("word.pinyin LIKE :searchTerm")
+            ->setParameter("searchTerm", $searchTerm)
+            ->setMaxResults(20)
+            ->getQuery()
+            ->getResult();
     }
 }

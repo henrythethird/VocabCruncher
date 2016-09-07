@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    {% include 'dictionary/search_bar.html.twig' %}
+    <br>
+    <table class="table table-striped">
+        <tr>
+            <th>Chinese</th>
+            <th>Meaning</th>
+        </tr>
+        {% for result in results %}
+            <tr>
+                <td>{{ result.simple }} [{{ result.pinyin }}]</td>
+                <td>
+                    <ol>
+                    {% for meaning in result.meanings %}
+                        <li>{{ meaning }}</li>
+                    {% endfor %}
+                    </ol>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
