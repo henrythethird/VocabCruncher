@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 class DictionaryController extends Controller
 {
     /**
-     * @Route("/dictionary", name="dictionary_search")
+     * @Route("/dictionary", name="dictionary_index")
      * @Template("dictionary/index.html.twig")
      */
     public function searchAction(Request $request)

@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1 class="text-center">Details</h1>
+
+    <p id="mandarin_sentence" style="font-size: 200%">{{ sentence.mandarin }}</p>
+    <p>English: {{ sentence.english }}</p>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="text/javascript">
+        $(function() {
+            var mandarinSentence = $('#mandarin_sentence');
+            alert('boots');
+            var text = mandarinSentence.text();
+            var construct = '';
+            {% for index in sentence.indexes %}
+            var meaning = '';
+                {% for meaning in index.word.meanings %}
+            meaning += "{{ meaning }}, ";
+                {% endfor %}
+            tmp = "{{ index.word.simple }}";
+            tmp = '<span class="word" title="'+meaning+'">' + text.substr({{ index.index }}, tmp.length) + "</span>";
+            construct += tmp;
+            {% endfor %}
+
+            mandarinSentence.html(construct);
+        });
+    </script>
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        span.word:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
