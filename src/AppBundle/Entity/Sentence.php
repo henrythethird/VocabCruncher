@@ -83,10 +83,26 @@ class Sentence
     }
 
     /**
-     * @param ArrayCollection $indexes
+     * @param SentenceIndex $index
      */
-    public function setIndexes($indexes)
+    public function addIndex(SentenceIndex $index)
     {
-        $this->indexes = $indexes;
+        $this->indexes->add($index);
+        $index->setSentence($this);
+    }
+
+    /**
+     * @param SentenceIndex $index
+     */
+    public function removeIndex(SentenceIndex $index)
+    {
+        $this->indexes->removeElement($index);
+        $index->setSentence(null);
+    }
+
+    public function clearIndex() {
+        foreach ($this->indexes as $index) {
+            $this->removeIndex($index);
+        }
     }
 }

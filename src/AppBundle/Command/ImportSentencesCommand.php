@@ -19,9 +19,8 @@ class ImportSentencesCommand extends ContainerAwareCommand
     {
         $this
             ->setName('app:import:sentences')
-            ->setDescription('Import sentences')
-            ->addArgument('file', InputArgument::REQUIRED, 'The path to the CC-CEDICT file')
-        ;
+            ->setDescription('Import sentences in the following format: [English][tab][Chinese]')
+            ->addArgument('file', InputArgument::REQUIRED, 'The path to the CC-CEDICT file');
     }
 
     /**
@@ -40,10 +39,11 @@ class ImportSentencesCommand extends ContainerAwareCommand
         $open = $file->openFile();
         while (!$open->eof()) {
             $line = $open->getCurrentLine();
-            $output->writeln($line);
             $parsedArr = $this->parse(trim($line));
 
-            if (!$parsedArr) continue;
+            if (!$parsedArr) {
+                continue;
+            }
 
             $sentence = new Sentence();
 
@@ -63,11 +63,13 @@ class ImportSentencesCommand extends ContainerAwareCommand
     {
         $sep = explode("\t", $line);
 
-        if (!isset($sep[1])) return false;
+        if (!isset($sep[1])) {
+            return false;
+        }
 
         return [
             'english' => $sep[0],
-            'mandarin' => $sep[1]
+            'mandarin' => $sep[1],
         ];
     }
 }

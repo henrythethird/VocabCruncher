@@ -2,11 +2,12 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Word;
+use AppBundle\Entity\Sentence;
 use Doctrine\ORM\EntityRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DefaultController extends Controller
@@ -22,21 +23,24 @@ class DefaultController extends Controller
          */
         $repo = $this->getDoctrine()
             ->getManager()
-            ->getRepository(Word::class);
+            ->getRepository(Sentence::class);
 
-        $words = $repo->findAll();
+        $sentences = $repo->findBy(array(), null, 100);
 
         return [
-            'words' => $words,
+            'sentences' => $sentences,
         ];
     }
 
     /**
-     * @Route("/", name="")
+     * @Route("/explain/{term}", name="")
      */
-    public function ajaxExplain()
+    public function ajaxExplain($term)
     {
-
+        $explain = $this->get("app.explain");
+        return new JsonResponse([
+            $explain->query($term)
+        ]);
     }
 
     /**

@@ -3,16 +3,35 @@
 namespace AppBundle\Command;
 
 use AppBundle\Entity\Sentence;
-use AppBundle\Entity\SentenceIndex;
-use AppBundle\Entity\Word;
-use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Service\ExplainService;
+use AppBundle\Util\SentenceCompileUtil;
+use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SentencePrecompileCommand extends ContainerAwareCommand
 {
+    /**
+     * @var EntityManager
+     */
+    private $entityManager;
+    /**
+     * @var ExplainService
+     */
+    private $explainer;
+
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
+        $this->explainer = $this->getContainer()
+            ->get('app.explain');
+
+        $this->entityManager = $this->getContainer()
+            ->get('doctrine')
+            ->getManager();
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -21,7 +40,7 @@ class SentencePrecompileCommand extends ContainerAwareCommand
         $this
             ->setName('app:sentences:precompile')
             ->setDescription('Precompiles the imported Sentences')
-            ->addOption('force', 'f', InputArgument::OPTIONAL);
+            ->addOption('recompile', 'r', InputOption::VALUE_NONE);
     }
 
     /**
@@ -29,42 +48,35 @@ class SentencePrecompileCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $em = $this->getContainer()
-            ->get('doctrine')
-            ->getManager();
-
-        $sentences = $em->getRepository(Sentence::class)
+        $sentences = $this
+            ->entityManager
+            ->getRepository(Sentence::class)
             ->findAll();
-
-        $explainer = $this->getContainer()
-            ->get('app.explain');
 
         /**
          * @var Sentence $sentence
          */
         foreach ($sentences as $sentence) {
-            if ($input->getOption('force') && !$sentence->getIndexes()->isEmpty()) {
-                $sentence->setIndexes(new ArrayCollection());
-            }
-            $explanation = $explainer->explain($sentence->getMandarin());
-            $output->writeln($sentence->getMandarin());
-
-            /**
-             * @var Word $word
-             */
-            foreach ($explanation as $index => $word) {
-                if (!is_object($word)) {
-                    continue;
-                }
-
-                $sentenceIndex = new SentenceIndex();
-                $sentenceIndex->setIndex($index);
-                $sentenceIndex->setSentence($sentence);
-                $sentenceIndex->setWord($word);
-
-                $em->persist($sentenceIndex);
+            $sentenceUtil = new SentenceCompileUtil($sentence, $this->explainer, $this->entityManager);
+            if ($input->getOption("recompile")) {
+                $output->writeln("recompiling...");
+                $sentenceUtil->recompile();
+            } else {
+                $this->compile($output, $sentenceUtil);
             }
         }
-        $em->flush();
+    }
+
+    /**
+     * @param OutputInterface $output
+     * @param SentenceCompileUtil $sentenceUtil
+     */
+    public function compile(OutputInterface $output, SentenceCompileUtil $sentenceUtil)
+    {
+        try {
+            $sentenceUtil->compile();
+        } catch (\Exception $exception) {
+            $output->writeln("Sentence already compiled... Skipping.");
+        }
     }
 }

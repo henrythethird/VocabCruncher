@@ -1,5 +1,19 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+    <table>
+    {% for sentence in sentences %}
+         <tr>
+             <td>{{ sentence.mandarin }}</td>
+             <td>{{ sentence.english }}</td>
+             <td>
+                 <ul>
+                 {% for index in sentence.indexes %}
+                     <li>{{ index.word.simple }}</li>
+                 {% endfor %}
+                 </ul>
+             </td>
+         </tr>
+    {% endfor %}
+    </table>
 {% endblock %}

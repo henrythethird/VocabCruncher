@@ -4,10 +4,17 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping\Index;
 
 /**
- * @Doctrine\ORM\Mapping\Entity
- * @Doctrine\ORM\Mapping\Table()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\WordRepository")
+ * @ORM\Table(
+ *     indexes={
+ *          @ORM\Index(name="simple_idx", columns={"simple"}),
+ *          @ORM\Index(name="complex_idx", columns={"complex"}),
+ *          @ORM\Index(name="pinyin", columns={"pinyin"})
+ *     }
+ * )
  */
 class Word
 {

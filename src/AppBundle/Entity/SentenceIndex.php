@@ -32,7 +32,7 @@ class SentenceIndex
     private $word;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", name="sindex")
      * @var $index
      */
     private $index;

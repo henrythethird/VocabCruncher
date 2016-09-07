@@ -12,23 +12,27 @@ class ExplainService
      */
     private $entityManager;
 
+    /**
+     * ExplainService constructor.
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
     /**
-     * @param string $string
+     * @param string $searchTerm
      * @return array
      */
-    public function explain($string)
+    public function explain($searchTerm)
     {
         $length = 0;
         $returnArray = [];
 
-        while ($length < mb_strlen($string)) {
+        while ($length < mb_strlen($searchTerm)) {
             $length += $this->backtrackQuery(
-                mb_substr($string, $length),
+                mb_substr($searchTerm, $length),
                 $length,
                 $returnArray
             );
@@ -38,31 +42,27 @@ class ExplainService
     }
 
     /**
-     * @param $string
+     * @param string $searchTerm
      * @return null|object
      */
-    public function query($string)
+    public function query($searchTerm)
     {
         return $this->entityManager
             ->getRepository(Word::class)
-            ->findOneBy(
-                [
-                    'simple' => $string,
-                ]
-            );
+            ->findOneBySimpleOrComplex($searchTerm);
     }
 
     /**
-     * Returns the length of the longest matched multibyte string
-     * @param $string
-     * @param $position
-     * @param $returnArray
+     * Returns the length of the matched multibyte string
+     * @param string $searchTerm
+     * @param int $position
+     * @param array &$returnArray
      * @return int
      */
-    public function backtrackQuery($string, $position, &$returnArray)
+    public function backtrackQuery($searchTerm, $position, &$returnArray)
     {
-        for ($length = mb_strlen($string); $length > 0; $length--) {
-            $result = $this->query(mb_substr($string, 0, $length));
+        for ($length = mb_strlen($searchTerm); $length > 0; $length--) {
+            $result = $this->query(mb_substr($searchTerm, 0, $length));
 
             if (null === $result) continue;
 
