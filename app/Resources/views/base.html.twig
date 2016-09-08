@@ -7,12 +7,41 @@
             <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
             <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+            <style>
+                @media (min-width: 768px) {
+                    .sidebar {
+                        z-index: 1;
+                        position: fixed;
+                        top: 50px;
+                        bottom: 0;
+                        width: 250px;
+                        margin-top: 1px;
+                        border-right: 1px solid #e7e7e7;
+                    }
+
+                    #page-wrapper {
+                        position: absolute;
+                        right: 0;
+                        left: 0;
+                        margin: -19px 0 0 250px;
+                        padding: 20px 30px 0 30px;
+                    }
+                }
+
+                #search-box {
+                    padding: 15px;
+                }
+
+                .sidebar ul li {
+                    border-bottom: 1px solid #e7e7e7;
+                }
+            </style>
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body style="padding-top: 70px; padding-bottom: 70px">
         <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                         <span class="sr-only">Toggle Navigation</span>
@@ -20,33 +49,61 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="#">VocabCruncher</a>
+                    <a class="navbar-brand" href="{{ path('homepage') }}">VocabCruncher</a>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="{{ path('dictionary_index') }}">Dictionary</a></li>
-                        <li><a href="{{ path('sentence_index') }}">Sentences</a></li>
-                    </ul>
                     <ul class="nav navbar-nav navbar-right">
-                        {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                            <li>
-                                <a>{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }} |</a>
-                            </li>
-                            <li>
-                                <a href="{{ path('fos_user_security_logout') }}">{{ 'layout.logout'|trans({}, 'FOSUserBundle') }}</a>
-                            </li>
-                        {% else %}
-                            <li>
-                                <a href="{{ path('fos_user_security_login') }}">{{ 'layout.login'|trans({}, 'FOSUserBundle') }}</a>
-                            </li>
-                        {% endif %}
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <span class="glyphicon glyphicon-user"></span>
+                                <span class="glyphicon glyphicon-triangle-bottom"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
+                                <li>
+                                    <a>{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</a>
+                                </li>
+                                <li>
+                                    <a href="{{ path('fos_user_security_logout') }}">
+                                        <span class="glyphicon glyphicon-log-out"></span>
+                                        {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="{{ path('fos_user_security_login') }}">
+                                        <span class="glyphicon glyphicon-log-in"></span>
+                                        {{ 'layout.login'|trans({}, 'FOSUserBundle') }}
+                                    </a>
+                                </li>
+                            {% endif %}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav">
+                        <li id="search-box">
+                            <form class="input-group" action="{{ path('dictionary_index') }}">
+                                <input class="form-control" name="q" type="text" placeholder="Search Dictionary...">
+                                <span class="input-group-btn">
+                                    <button class="form-control btn btn-default" type="submit">
+                                        <span class="glyphicon glyphicon-search"></span>
+                                    </button>
+                                </span>
+                            </form>
+                        </li>
+                        <li><a href="{{ path('homepage') }}"><i class="glyphicon glyphicon-home"></i> Home</a></li>
+                        <li><a href="{{ path('dictionary_index') }}"><i class="glyphicon glyphicon-book"></i> Dictionary</a></li>
+                        <li><a href="{{ path('sentence_index') }}"><i class="glyphicon glyphicon-align-left"></i> Sentences</a></li>
                     </ul>
                 </div>
             </div>
         </nav>
 
-        <div class="container">
+        <div id="page-wrapper" class="container-fluid">
             {% for msg in app.session.flashBag.get('success') %}
                 <div class="alert alert-success">
                     {{ msg }}

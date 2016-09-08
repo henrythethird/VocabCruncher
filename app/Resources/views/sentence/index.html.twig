@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    <h1 class="text-center">Sentences</h1>
+    <h1 class="text-center page-header">Sentences</h1>
     {% include 'general/search_bar.html.twig' with {formPath:'sentence_index'} %}
     <br>
     <table class="table table-striped">
@@ -9,7 +9,7 @@
             <tr>
                 <td class="col-md-6">{{ sentence.mandarin }}</td>
                 <td class="col-md-5">{{ sentence.english }}</td>
-                <td class="col-md-1">
+                <td class="col-md-1 text-right">
                     <a href="{{ path('sentence_show', {id: sentence.id}) }}">
                         <button class="btn btn-default">
                             Details
