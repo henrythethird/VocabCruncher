@@ -3,10 +3,23 @@
 namespace Tests\AppBundle\Util;
 
 use AppBundle\Repository\WordRepository;
+use AppBundle\Service\ExplainService;
 use AppBundle\Util\SearchUtil;
 
 class SearchUtilTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ExplainService $explainService
+     */
+    private $explainService;
+
+    protected function setUp()
+    {
+        $this->explainService = $this->getMockBuilder(ExplainService::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+    }
+
     /**
      * @dataProvider sequenceProvider
      */
@@ -24,8 +37,9 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
 
         /**
          * @var WordRepository $repoMock
+         * @var ExplainService $explainService
          */
-        $util = new SearchUtil($repoMock);
+        $util = new SearchUtil($repoMock, $this->explainService);
 
         $this->assertEquals($expected, $util->search("test", $chineseFirst));
     }
@@ -48,7 +62,7 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
      * @dataProvider sampleSearchStringProvider
      * @param $searchString
      */
-    public function notestAltersToChineseIfCharsPresent($searchString)
+    public function testAltersToChineseIfCharsPresent($searchString)
     {
         $repoMock = $this->getMockBuilder(WordRepository::class)
             ->disableOriginalConstructor()
@@ -63,7 +77,7 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
         /**
          * @var WordRepository $repoMock
          */
-        $util = new SearchUtil($repoMock);
+        $util = new SearchUtil($repoMock, $this->explainService);
 
         $this->assertEquals('爸爸', $util->search($searchString, true));
         $this->assertEquals('爸爸', $util->search($searchString, false));

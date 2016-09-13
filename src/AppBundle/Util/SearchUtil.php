@@ -3,6 +3,7 @@
 namespace AppBundle\Util;
 
 use AppBundle\Repository\WordRepository;
+use AppBundle\Service\ExplainService;
 use Doctrine\ORM\EntityRepository;
 
 class SearchUtil
@@ -12,18 +13,33 @@ class SearchUtil
      */
     private $repository;
 
-    public function __construct(WordRepository $entityRepository)
+    /**
+     * @var PinyinUtil
+     */
+    private $pinyinUtil;
+
+    /**
+     * @var ExplainService
+     */
+    private $explain;
+
+    public function __construct(WordRepository $entityRepository, ExplainService $explain)
     {
         $this->repository = $entityRepository;
+        $this->explain = $explain;
+        $this->pinyinUtil = new PinyinUtil();
     }
 
     /**
-     * @param $searchTerm
+     * @param string $searchTerm
      * @param bool $preferChinese
      * @return array
      */
     public function search($searchTerm, $preferChinese = false)
     {
+        if ($this->pinyinUtil->containsChinese($searchTerm)) {
+            return $this->chineseOrExplain($searchTerm);
+        }
         if ($preferChinese) {
             return $this->chineseFirst($searchTerm);
         } else {
@@ -32,7 +48,21 @@ class SearchUtil
     }
 
     /**
-     * @param $searchTerm
+     * @param string $searchTerm
+     * @return array
+     */
+    public function chineseOrExplain($searchTerm)
+    {
+        $result = $this->repository->dictionarySearchChinese($searchTerm);
+        if (!empty($result)) {
+            return $result;
+        }
+
+        return $this->explain->explain($searchTerm);
+    }
+
+    /**
+     * @param string $searchTerm
      * @return array
      */
     public function chineseFirst($searchTerm)
@@ -46,7 +76,7 @@ class SearchUtil
     }
 
     /**
-     * @param $searchTerm
+     * @param string $searchTerm
      * @return array
      */
     public function englishFirst($searchTerm)
