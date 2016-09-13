@@ -4,26 +4,36 @@
     <h1 class="text-center page-header">中文 Dictionary</h1>
     {% include 'general/search_bar.html.twig' with {formPath:'dictionary_index'} %}
     <br>
-    <table class="table table-striped">
+    <table class="table table-striped table-hover table-bordered">
         <tr>
-            <th>Chinese</th>
+            <th class="text-center">Chinese</th>
+            <th class="text-center">Pinyin</th>
             <th>Meaning</th>
         </tr>
         {% for result in results %}
             <tr>
-                <td>{{ result.simple }} [{{ result.pinyin }}]</td>
+                <td class="text-center">
+                    <div style="font-size: 200%; white-space: nowrap">{{ result.simple }}</div>
+                </td>
+                <td class="text-center">
+                    <div style="white-space: nowrap">{{ result.pinyin }}</div>
+                </td>
                 <td>
-                    <ol>
                     {% for meaning in result.meanings %}
-                        <li>{{ meaning }}</li>
+                        <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
                     {% endfor %}
-                    </ol>
                 </td>
             </tr>
         {% endfor %}
     </table>
 {% endblock %}
 
-{% block javascripts %}
+{% block stylesheets %}
     {{ parent() }}
+
+    <style>
+        span.meaning {
+            margin-right: 5px;
+        }
+    </style>
 {% endblock %}

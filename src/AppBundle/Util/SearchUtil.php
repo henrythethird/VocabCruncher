@@ -58,7 +58,7 @@ class SearchUtil
             return $result;
         }
 
-        return $this->explain->explain($searchTerm);
+        return array_filter($this->explain->explain($searchTerm));
     }
 
     /**

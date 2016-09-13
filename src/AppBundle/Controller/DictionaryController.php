@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 class DictionaryController extends Controller
 {
     /**
-     * @Route("/dictionary", name="dictionary_index")
+     * @Route("/dictionary/search", name="dictionary_index")
      * @Template("dictionary/index.html.twig")
      */
     public function searchAction(Request $request)
@@ -28,7 +28,8 @@ class DictionaryController extends Controller
 
         $searchUtil = new SearchUtil(
             $this->getDoctrine()
-                ->getRepository(Word::class)
+                ->getRepository(Word::class),
+            $this->get('app.explain')
         );
 
         return [
