@@ -44,7 +44,7 @@ class SearchServiceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($englishReturn);
 
         /**
-         * @var WordRepository $repoMock
+         * @var EntityManager $emMock
          * @var ExplainService $explainService
          */
         $util = new SearchService($emMock, $this->explainService);
@@ -90,7 +90,7 @@ class SearchServiceTest extends \PHPUnit_Framework_TestCase
             ->willThrowException(new \Exception());
 
         /**
-         * @var WordRepository $repoMock
+         * @var EntityManager $emMock
          */
         $util = new SearchService($emMock, $this->explainService);
 
