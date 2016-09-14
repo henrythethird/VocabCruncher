@@ -68,8 +68,8 @@ class ImportSentencesCommand extends ContainerAwareCommand
         }
 
         return [
-            'english' => $sep[0],
-            'mandarin' => $sep[1],
+            'english' => $sep[1],
+            'mandarin' => $sep[0],
         ];
     }
 }

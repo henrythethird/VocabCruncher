@@ -34,17 +34,14 @@ class SentenceCompileService
             throw new \Exception("Sentence already compiled");
         }
 
-        $explanation = $this->explain->explain($sentence->getMandarin());
+        $explanation = $this->explain
+            ->explain($sentence->getMandarin());
 
         foreach ($explanation as $index => $word) {
-            if (!is_object($word)) {
-                continue;
-            }
-
             $sentenceIndex = new SentenceIndex();
             $sentenceIndex->setIndex($index);
             $sentenceIndex->setSentence($sentence);
-            $sentenceIndex->setWord($word);
+            $sentenceIndex->setWords($word);
 
             $this->entityManager->persist($sentenceIndex);
         }

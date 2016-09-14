@@ -54,6 +54,21 @@ class WordRepository extends EntityRepository
     }
 
     /**
+     * @param array $subTerms
+     * @return array
+     */
+    public function optimizedFindAllSubmatch(array $subTerms)
+    {
+        return $this->createQueryBuilder("word")
+            ->where("word.simple IN (:searchTerms)")
+            ->orWhere("word.complex IN (:searchTerms)")
+            ->orderBy("word.length", "DESC")
+            ->setParameter("searchTerms", $subTerms)
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * @param $searchTerm
      * @return array
      */
@@ -63,7 +78,7 @@ class WordRepository extends EntityRepository
             ->where("word.simple LIKE :searchTerm")
             ->orWhere("word.complex LIKE :searchTerm")
             ->orWhere("word.pinyinAbbr LIKE :searchTerm")
-            ->orderBy("LENGTH(word.simple)")
+            ->orderBy("word.length")
             ->addOrderBy("word.simple")
             ->setParameter("searchTerm", "$searchTerm%")
             ->setMaxResults(self::MAX_SEARCH_RESULTS)

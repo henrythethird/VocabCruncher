@@ -24,8 +24,8 @@ class ImportSentencesCommandTest extends \PHPUnit_Framework_TestCase
             [
                 "asdf\tddhdf",
                 [
-                    'english' => 'asdf',
-                    'mandarin' => 'ddhdf'
+                    'english' => 'ddhdf',
+                    'mandarin' => 'asdf'
                 ]
             ]
         ];

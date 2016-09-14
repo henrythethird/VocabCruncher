@@ -41,15 +41,24 @@ class ExplainService
         return $returnArray;
     }
 
+    public function separateTerms($searchTerm)
+    {
+        $separatedSearchTerms = [];
+        for ($length = mb_strlen($searchTerm); $length > 0; $length--) {
+            $separatedSearchTerms[] = mb_substr($searchTerm, 0, $length);
+        }
+        return $separatedSearchTerms;
+    }
+
     /**
      * @param string $searchTerm
-     * @return null|object
+     * @return array
      */
     public function query($searchTerm)
     {
         return $this->entityManager
             ->getRepository(Word::class)
-            ->findOneBySimpleOrComplex($searchTerm);
+            ->findBySimpleOrComplex($searchTerm);
     }
 
     /**
@@ -64,7 +73,7 @@ class ExplainService
         for ($length = mb_strlen($searchTerm); $length > 0; $length--) {
             $result = $this->query(mb_substr($searchTerm, 0, $length));
 
-            if (null === $result) continue;
+            if (empty($result)) continue;
 
             $returnArray[$position] = $result;
 

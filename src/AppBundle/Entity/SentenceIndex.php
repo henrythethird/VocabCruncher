@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -25,17 +26,22 @@ class SentenceIndex
     private $sentence;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Word", inversedBy="sentenceIndexes")
+     * @ORM\ManyToMany(targetEntity="Word", inversedBy="sentenceIndexes")
      * @ORM\JoinColumn(referencedColumnName="id", onDelete="CASCADE")
-     * @var Word
+     * @var ArrayCollection
      */
-    private $word;
+    private $words;
 
     /**
      * @ORM\Column(type="integer", name="sindex")
      * @var $index
      */
     private $index;
+
+    public function __construct()
+    {
+        $this->words = new ArrayCollection();
+    }
 
     /**
      * @return Sentence
@@ -70,18 +76,18 @@ class SentenceIndex
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection
      */
-    public function getWord()
+    public function getWords()
     {
-        return $this->word;
+        return $this->words;
     }
 
     /**
-     * @param mixed $word
+     * @param ArrayCollection $words
      */
-    public function setWord($word)
+    public function setWords($words)
     {
-        $this->word = $word;
+        $this->words = $words;
     }
 }

@@ -10,11 +10,12 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="AppBundle\Repository\WordRepository")
  * @ORM\Table(
  *     indexes={
+ *          @ORM\Index(name="length_idx", columns={"length"}),
  *          @ORM\Index(name="simple_idx", columns={"simple"}),
  *          @ORM\Index(name="complex_idx", columns={"complex"}),
  *          @ORM\Index(name="pinyin_idx", columns={"pinyin"}),
  *          @ORM\Index(name="pinyin_abbr_idx", columns={"pinyin_abbr"}),
- *          @ORM\Index(name="composite_idx", columns={"simple", "complex", "pinyin_abbr"})
+ *          @ORM\Index(name="composite_idx", columns={"simple", "complex", "pinyin_abbr", "length"})
  *     }
  * )
  * @ORM\HasLifecycleCallbacks()
@@ -42,6 +43,12 @@ class Word
     private $simple;
 
     /**
+     * @ORM\Column(type="integer")
+     * @var int
+     */
+    private $length;
+
+    /**
      * @ORM\Column(type="string")
      * @var string
      */
@@ -61,7 +68,7 @@ class Word
     private $meanings;
 
     /**
-     * @ORM\OneToMany(targetEntity="SentenceIndex", mappedBy="word", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="SentenceIndex", mappedBy="words", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      * @var ArrayCollection
      */
@@ -168,5 +175,6 @@ class Word
     {
         $pinyinUtil = new PinyinService();
         $this->pinyinAbbr = $pinyinUtil->fromNumberToPlain($this->pinyin);
+        $this->length = mb_strlen($this->getSimple());
     }
 }

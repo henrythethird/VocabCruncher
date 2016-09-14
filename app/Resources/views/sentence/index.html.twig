@@ -7,7 +7,11 @@
     <table class="table table-striped">
         {% for sentence in sentences %}
             <tr>
-                <td class="col-md-6">{{ sentence.mandarin }}</td>
+                <td class="col-md-6">
+                    <span style="font-size: 150%">
+                        {{ sentence.mandarin }}
+                    </span>
+                </td>
                 <td class="col-md-5">{{ sentence.english }}</td>
                 <td class="col-md-1 text-right">
                     <a href="{{ path('sentence_show', {id: sentence.id}) }}">

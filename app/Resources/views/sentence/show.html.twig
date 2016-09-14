@@ -4,7 +4,6 @@
     <h1 class="text-center page-header">Sentence Details</h1>
 
     <p class="text-center" id="mandarin_sentence" style="font-size: 200%">{{ sentence.mandarin }}</p>
-    <p class="text-center" id="pinyin_sentence">{{ sentence.english }}</p>
     <p class="text-center">{{ sentence.english }}</p>
 {% endblock %}
 
@@ -14,29 +13,30 @@
     <script type="text/javascript">
         $(function() {
             var mandarinSentence = $('#mandarin_sentence');
-            var pinyinSentence = $('#pinyin_sentence');
 
             var text = mandarinSentence.text();
             var construct = '';
-            var constructPinyin = '';
-            var previousIndex = 0;
+            var previousIndex = 1;
             {% for index in sentence.indexes %}
             if (previousIndex < {{ index.index }}) {
                 construct += text.substr(previousIndex, {{ index.index }} - previousIndex);
             }
             var meaning = '';
-                {% for meaning in index.word.meanings %}
-            meaning += "{{ meaning }}, ";
+            {% for word in index.words %}
+                meaning += "<div><strong>[{{ word.pinyin }}]</strong> ";
+                {% for meaning in word.meanings %}
+                    meaning += "{{ meaning }}, ";
                 {% endfor %}
+                meaning = meaning.substr(0, meaning.length - 2);
+                meaning += '</div>';
+                tmp1 = "{{ word.simple }}";
+            {% endfor %}
 
-            meaning = meaning.substr(0, meaning.length - 2);
-            tmp1 = "{{ index.word.simple }}";
             tmp = '<a tabindex="0" data-trigger="focus" data-placement="bottom" role="button" data-toggle="popover" ' +
-                    'data-content="' + meaning + '" data-html="true" class="word" ' +
-                    'title="<a href=\'{{ path('dictionary_index', {'q' : index.word.simple})}}\'>{{ index.word.pinyin }}</a>">' +
+                    'data-content="' + meaning + '" data-html="true" class="word">' +
                     text.substr({{ index.index }}, tmp1.length) + "</a>";
             construct += tmp;
-            constructPinyin += "{{ index.word.pinyin }} ";
+
             previousIndex = {{ index.index }} + parseInt(tmp1.length);
             {% endfor %}
             if (previousIndex < text.length) {
@@ -44,7 +44,6 @@
             }
 
             mandarinSentence.html(construct);
-            pinyinSentence.html(constructPinyin);
 
             $('.word').popover();
         });

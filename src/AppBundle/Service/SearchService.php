@@ -58,7 +58,17 @@ class SearchService
             return $result;
         }
 
-        return array_filter($this->explain->explain($searchTerm));
+        $explanations = $this->explain->explain($searchTerm);
+        $flattenedExplanations = [];
+
+        foreach ($explanations as $explanation) {
+            if (!is_array($explanation)) {
+                continue;
+            }
+            $flattenedExplanations = array_merge($flattenedExplanations, $explanation);
+        }
+
+        return array_filter($flattenedExplanations);
     }
 
     /**

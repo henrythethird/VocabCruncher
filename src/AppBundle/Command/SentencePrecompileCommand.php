@@ -17,10 +17,16 @@ class SentencePrecompileCommand extends ContainerAwareCommand
      * @var EntityManager
      */
     private $entityManager;
+
     /**
      * @var ExplainService
      */
     private $explainer;
+
+    /**
+     * @var SentenceCompileService
+     */
+    private $compiler;
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -30,6 +36,9 @@ class SentencePrecompileCommand extends ContainerAwareCommand
         $this->entityManager = $this->getContainer()
             ->get('doctrine')
             ->getManager();
+
+        $this->compiler = $compiler = $this->getContainer()
+            ->get('app.compile');
     }
 
     /**
@@ -57,24 +66,23 @@ class SentencePrecompileCommand extends ContainerAwareCommand
          * @var Sentence $sentence
          */
         foreach ($sentences as $sentence) {
-            $sentenceUtil = new SentenceCompileService($sentence, $this->explainer, $this->entityManager);
             if ($input->getOption("recompile")) {
                 $output->writeln("recompiling...");
-                $sentenceUtil->recompile();
+                $this->compiler->recompile($sentence);
             } else {
-                $this->compile($output, $sentenceUtil);
+                $this->compile($output, $sentence);
             }
         }
     }
 
     /**
      * @param OutputInterface $output
-     * @param SentenceCompileService $sentenceUtil
+     * @param Sentence $sentence
      */
-    public function compile(OutputInterface $output, SentenceCompileService $sentenceUtil)
+    public function compile(OutputInterface $output, Sentence $sentence)
     {
         try {
-            $sentenceUtil->compile();
+            $this->compiler->compile($sentence);
         } catch (\Exception $exception) {
             $output->writeln("Sentence already compiled... Skipping.");
         }
