@@ -1,19 +1,19 @@
 <?php
 
-namespace Tests\AppBundle\Util;
+namespace Tests\AppBundle\Service;
 
-use AppBundle\Util\PinyinUtil;
+use AppBundle\Service\PinyinService;
 
-class PinyinUtilTest extends \PHPUnit_Framework_TestCase
+class PinyinServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var PinyinUtil
+     * @var PinyinService
      */
     private $util;
 
     protected function setUp()
     {
-        $this->util = new PinyinUtil();
+        $this->util = new PinyinService();
     }
 
     /**

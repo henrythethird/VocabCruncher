@@ -1,8 +1,8 @@
 <?php
 
-namespace AppBundle\Util;
+namespace AppBundle\Service;
 
-class PinyinUtil
+class PinyinService
 {
     /**
      * @param string $numberedNotation

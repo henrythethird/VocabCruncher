@@ -4,3 +4,11 @@ services:
     app.explain:
         class: AppBundle\Service\ExplainService
         arguments: ["@doctrine.orm.entity_manager"]
+    app.pinyin:
+        class: AppBundle\Service\PinyinService
+    app.search:
+        class: AppBundle\Service\SearchService
+        arguments: ["@doctrine.orm.entity_manager", "@app.explain"]
+    app.compile:
+        class: AppBundle\Service\SentenceCompileService
+        arguments: ["@doctrine.orm.entity_manager", "@app.explain"]

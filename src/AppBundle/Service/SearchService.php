@@ -1,12 +1,12 @@
 <?php
 
-namespace AppBundle\Util;
+namespace AppBundle\Service;
 
-use AppBundle\Repository\WordRepository;
-use AppBundle\Service\ExplainService;
+use AppBundle\Entity\Word;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-class SearchUtil
+class SearchService
 {
     /**
      * @var EntityRepository
@@ -14,7 +14,7 @@ class SearchUtil
     private $repository;
 
     /**
-     * @var PinyinUtil
+     * @var PinyinService
      */
     private $pinyinUtil;
 
@@ -23,11 +23,11 @@ class SearchUtil
      */
     private $explain;
 
-    public function __construct(WordRepository $entityRepository, ExplainService $explain)
+    public function __construct(EntityManager $entityManager, ExplainService $explain)
     {
-        $this->repository = $entityRepository;
+        $this->repository = $entityManager->getRepository(Word::class);
         $this->explain = $explain;
-        $this->pinyinUtil = new PinyinUtil();
+        $this->pinyinUtil = new PinyinService();
     }
 
     /**

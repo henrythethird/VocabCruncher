@@ -1,12 +1,13 @@
 <?php
 
-namespace Tests\AppBundle\Util;
+namespace Tests\AppBundle\Service;
 
 use AppBundle\Repository\WordRepository;
 use AppBundle\Service\ExplainService;
-use AppBundle\Util\SearchUtil;
+use AppBundle\Service\SearchService;
+use Doctrine\ORM\EntityManager;
 
-class SearchUtilTest extends \PHPUnit_Framework_TestCase
+class SearchServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var ExplainService $explainService
@@ -30,6 +31,13 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
             ->setMethods(["dictionarySearchChinese", "dictionarySearchEnglish"])
             ->getMock();
 
+        $emMock = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->setMethods(["getRepository"])
+            ->getMock();
+        $emMock->method("getRepository")
+            ->willReturn($repoMock);
+
         $repoMock->method("dictionarySearchChinese")
             ->willReturn($chineseReturn);
         $repoMock->method("dictionarySearchEnglish")
@@ -39,7 +47,7 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
          * @var WordRepository $repoMock
          * @var ExplainService $explainService
          */
-        $util = new SearchUtil($repoMock, $this->explainService);
+        $util = new SearchService($emMock, $this->explainService);
 
         $this->assertEquals($expected, $util->search("test", $chineseFirst));
     }
@@ -69,6 +77,13 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
             ->setMethods(["dictionarySearchChinese", "dictionarySearchEnglish"])
             ->getMock();
 
+        $emMock = $this->getMockBuilder(EntityManager::class)
+            ->disableOriginalConstructor()
+            ->setMethods(["getRepository"])
+            ->getMock();
+        $emMock->method("getRepository")
+            ->willReturn($repoMock);
+
         $repoMock->method("dictionarySearchChinese")
             ->willReturn('爸爸');
         $repoMock->method("dictionarySearchEnglish")
@@ -77,7 +92,7 @@ class SearchUtilTest extends \PHPUnit_Framework_TestCase
         /**
          * @var WordRepository $repoMock
          */
-        $util = new SearchUtil($repoMock, $this->explainService);
+        $util = new SearchService($emMock, $this->explainService);
 
         $this->assertEquals('爸爸', $util->search($searchString, true));
         $this->assertEquals('爸爸', $util->search($searchString, false));

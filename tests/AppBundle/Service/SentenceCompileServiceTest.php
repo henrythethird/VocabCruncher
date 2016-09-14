@@ -1,14 +1,14 @@
 <?php
 
-namespace Tests\AppBundle\Util;
+namespace Tests\AppBundle\Service;
 
 use AppBundle\Entity\Sentence;
 use AppBundle\Service\ExplainService;
-use AppBundle\Util\SentenceCompileUtil;
+use AppBundle\Service\SentenceCompileService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
-class SentenceCompileUtilTest extends \PHPUnit_Framework_TestCase
+class SentenceCompileServiceTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @expectedException \Exception
@@ -36,7 +36,7 @@ class SentenceCompileUtilTest extends \PHPUnit_Framework_TestCase
          * @var ExplainService $explainMock
          * @var EntityManager $emMock
          */
-        $sentenceUtil = new SentenceCompileUtil($sentenceMock, $explainMock, $emMock);
-        $sentenceUtil->compile();
+        $sentenceUtil = new SentenceCompileService($emMock, $explainMock);
+        $sentenceUtil->compile($sentenceMock);
     }
 }

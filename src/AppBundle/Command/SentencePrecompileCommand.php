@@ -4,7 +4,7 @@ namespace AppBundle\Command;
 
 use AppBundle\Entity\Sentence;
 use AppBundle\Service\ExplainService;
-use AppBundle\Util\SentenceCompileUtil;
+use AppBundle\Service\SentenceCompileService;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -57,7 +57,7 @@ class SentencePrecompileCommand extends ContainerAwareCommand
          * @var Sentence $sentence
          */
         foreach ($sentences as $sentence) {
-            $sentenceUtil = new SentenceCompileUtil($sentence, $this->explainer, $this->entityManager);
+            $sentenceUtil = new SentenceCompileService($sentence, $this->explainer, $this->entityManager);
             if ($input->getOption("recompile")) {
                 $output->writeln("recompiling...");
                 $sentenceUtil->recompile();
@@ -69,9 +69,9 @@ class SentencePrecompileCommand extends ContainerAwareCommand
 
     /**
      * @param OutputInterface $output
-     * @param SentenceCompileUtil $sentenceUtil
+     * @param SentenceCompileService $sentenceUtil
      */
-    public function compile(OutputInterface $output, SentenceCompileUtil $sentenceUtil)
+    public function compile(OutputInterface $output, SentenceCompileService $sentenceUtil)
     {
         try {
             $sentenceUtil->compile();

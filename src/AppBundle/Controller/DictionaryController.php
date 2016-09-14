@@ -3,7 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Word;
-use AppBundle\Util\SearchUtil;
+use AppBundle\Service\SearchService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -18,24 +18,18 @@ class DictionaryController extends Controller
     public function searchAction(Request $request)
     {
         $searchTerm = $request->get('q');
+        $chineseFirst = $request->get('chinese_first', false);
 
         if (empty($searchTerm)) {
             return ['results' => []];
         }
 
-        $repo = $this->getDoctrine()
-            ->getRepository(Word::class);
-
-        $searchUtil = new SearchUtil(
-            $this->getDoctrine()
-                ->getRepository(Word::class),
-            $this->get('app.explain')
-        );
+        $searchUtil = $this->get("app.search");
 
         return [
             'results' => $searchUtil->search(
                 $searchTerm,
-                $request->get('chinese_first', false)
+                $request->get('chinese_first', $chineseFirst)
             ),
         ];
     }

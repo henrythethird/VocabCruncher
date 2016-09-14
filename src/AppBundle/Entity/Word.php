@@ -2,7 +2,7 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Util\PinyinUtil;
+use AppBundle\Service\PinyinService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -166,7 +166,7 @@ class Word
      */
     public function preFlush()
     {
-        $pinyinUtil = new PinyinUtil();
+        $pinyinUtil = new PinyinService();
         $this->pinyinAbbr = $pinyinUtil->fromNumberToPlain($this->pinyin);
     }
 }
