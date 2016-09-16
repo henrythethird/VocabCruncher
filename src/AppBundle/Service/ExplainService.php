@@ -62,7 +62,7 @@ class ExplainService
     }
 
     /**
-     * Returns the length of the matched multibyte string
+     * Returns the length of the matched multi-byte string
      * @param string $searchTerm
      * @param int $position
      * @param array &$returnArray

@@ -8,6 +8,7 @@ class SentenceRepository extends EntityRepository
 {
     const LATEST_LIMIT = 20;
     const SEARCH_LIMIT = 20;
+    const SENTENCE_LIMIT = 20;
 
     public function findLatest()
     {
@@ -21,6 +22,16 @@ class SentenceRepository extends EntityRepository
             ->orWhere("sentence.english LIKE :searchTerm")
             ->setParameter(":searchTerm", "%$searchTerm%")
             ->setMaxResults(self::SEARCH_LIMIT)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function containsChinese($searchTerm)
+    {
+        return $this->createQueryBuilder("sentence")
+            ->where("sentence.mandarin LIKE :searchTerm")
+            ->setParameter(":searchTerm", "%$searchTerm%")
+            ->setMaxResults(self::SENTENCE_LIMIT)
             ->getQuery()
             ->getResult();
     }

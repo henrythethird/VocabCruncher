@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Sentence;
+use AppBundle\Entity\Word;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -29,6 +31,27 @@ class DictionaryController extends Controller
                 $searchTerm,
                 $request->get('chinese_first', $chineseFirst)
             ),
+        ];
+    }
+
+    /**
+     * @Route("/dictionary/details/{simple}", name="dictionary_details")
+     * @Template("dictionary/details.html.twig")
+     */
+    public function detailsAction($simple)
+    {
+        $words = $this->getDoctrine()
+            ->getRepository(Word::class)
+            ->findBySimpleOrComplex($simple);
+
+        $exampleSentences = $this->getDoctrine()
+            ->getRepository(Sentence::class)
+            ->containsChinese($simple);
+
+        return [
+            'words' => $words,
+            'simple' => $simple,
+            'exampleSentences' => $exampleSentences
         ];
     }
 }

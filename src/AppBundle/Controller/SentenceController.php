@@ -16,7 +16,7 @@ class SentenceController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $repository = $sentences = $this->getDoctrine()->getRepository(Sentence::class);
+        $repository = $this->getDoctrine()->getRepository(Sentence::class);
         $searchTerm = $request->get('q');
         if (empty($searchTerm)) {
             $sentences = $repository->findLatest();

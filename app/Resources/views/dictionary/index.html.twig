@@ -11,7 +11,7 @@
             <th>Meaning</th>
         </tr>
         {% for result in results %}
-            <tr>
+            <tr style="cursor: pointer" onclick="window.location.href='{{ path('dictionary_details', {'simple': result.simple}) }}'">
                 <td class="text-center">
                     <div style="font-size: 200%; white-space: nowrap">{{ result.simple }}</div>
                 </td>
