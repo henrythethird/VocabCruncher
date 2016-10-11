@@ -89,6 +89,14 @@ class Word
     }
 
     /**
+     * @return int
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
+
+    /**
      * @return string
      */
     public function getComplex()

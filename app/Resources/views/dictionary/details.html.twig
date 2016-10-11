@@ -1,41 +1,49 @@
 <h1><b>{{ word.simple }} [{{ word.complex }}]</b></h1>
 <h2>PY [{{ word.pinyin }}]</h2>
-<ul class="nav nav-tabs nav-justified">
-    <li class="active">
-        <a href="#dict" aria-controls="dict" role="tab" data-toggle="tab">Dictionary</a>
-    </li>
-    <li>
-        <a href="#stroke" aria-controls="stroke" role="tab" data-toggle="tab">Stroke-Order</a>
-    </li>
-    <li>
-        <a href="#words" aria-controls="words" role="tab" data-toggle="tab">Related Words</a>
-    </li>
-    <li>
-        <a href="#sentences" aria-controls="sentences" role="tab" data-toggle="tab">Example Sentences</a>
-    </li>
-</ul>
+<div class="absoluteTabs">
+    <ul class="nav nav-tabs nav-justified">
+        <li class="active">
+            <a class="ajaxTab" href="#dict" aria-controls="dict" role="tab" data-toggle="tab">Dictionary</a>
+        </li>
+        <li>
+            <a href="#stroke" aria-controls="stroke" role="tab" data-toggle="tab" class="ajaxTab"
+               data-url="{{ path('dictionary_stroke', {id: word.id}) }}">Stroke-Order</a>
+        </li>
+        {% if word.length > 1 %}
+            <li>
+                <a href="#chars" aria-controls="chars" role="tab" data-toggle="tab" class="ajaxTab"
+                   data-url="{{ path('dictionary_chars', {id: word.id}) }}">Characters</a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="#words" aria-controls="words" role="tab" data-toggle="tab" class="ajaxTab"
+               data-url="{{ path('dictionary_words', {id: word.id}) }}">Related Words</a>
+        </li>
+        <li>
+            <a href="#sentences" aria-controls="sentences" role="tab" data-toggle="tab" class="ajaxTab"
+               data-url="{{ path('dictionary_sentences', {id: word.id}) }}">Example Sentences</a>
+        </li>
+    </ul>
 
-<div class="tab-content">
-    <div id="dict" class="tab-pane active initialized">
-        <table class="table table-bordered">
-            <tr>
-                <td>
-                    <ol>
-                    {% for meaning in word.meanings %}
-                    <li> {{ meaning.meaning }}</li>
-                    {% endfor %}
-                    </ol>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div id="stroke" class="tab-pane" data-url="{{ path('dictionary_stroke', {id: word.id}) }}">
+    <div class="tab-content">
+        <div id="dict" class="tab-pane active initialized">
+            <ol>
+                {% for meaning in word.meanings %}
+                <li> {{ meaning.meaning }}</li>
+                {% endfor %}
+            </ol>
+        </div>
+        <div id="chars" class="tab-pane">
 
-    </div>
-    <div id="words" class="tab-pane" data-url="{{ path('dictionary_words', {id: word.id}) }}">
+        </div>
+        <div id="stroke" class="tab-pane">
 
-    </div>
-    <div id="sentences" class="tab-pane" data-url="{{ path('dictionary_sentences', {id: word.id}) }}">
+        </div>
+        <div id="words" class="tab-pane">
 
+        </div>
+        <div id="sentences" class="tab-pane">
+
+        </div>
     </div>
 </div>

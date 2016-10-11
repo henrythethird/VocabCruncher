@@ -2,7 +2,9 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Sentence;
 use AppBundle\Entity\Word;
+use AppBundle\Service\PinyinService;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -11,8 +13,21 @@ use Symfony\Component\HttpFoundation\Request;
 class DictionaryController extends Controller
 {
     /**
-     * @Route("/dictionary/search", name="dictionary_index")
+     * @Route("/dictionary", name="dictionary_index")
      * @Template("dictionary/index.html.twig")
+     */
+    public function indexAction(Request $request)
+    {
+        $searchTerm = $request->get('q');
+
+        return [
+            'searchTerm' => $searchTerm
+        ];
+    }
+
+    /**
+     * @Route("/dictionary/search", name="dictionary_search")
+     * @Template("dictionary/result.html.twig")
      */
     public function searchAction(Request $request)
     {
@@ -48,7 +63,17 @@ class DictionaryController extends Controller
      */
     public function strokeAction(Word $word)
     {
-        return ['word' => $word];
+        $pinyin = new PinyinService();
+
+        $chars = [];
+        for ($i = 0; $i < mb_strlen($word->getSimple()); $i++) {
+            $char = mb_substr($word->getSimple(), $i, 1);
+
+            if ($pinyin->containsChinese($char)) {
+                $chars[] = mb_substr($word->getSimple(), $i, 1);
+            }
+        }
+        return ['chars' => $chars];
     }
 
     /**
@@ -57,7 +82,32 @@ class DictionaryController extends Controller
      */
     public function wordsAction(Word $word)
     {
-        return ['word' => $word];
+        $repo = $this->getDoctrine()->getRepository(Word::class);
+        $related = $repo->findRelatedWords($word->getSimple());
+        dump($related);
+        return ['words' => $related];
+    }
+
+    /**
+     * @Route("/dictionary/chars/{id}", name="dictionary_chars")
+     * @Template("dictionary/chars.html.twig")
+     */
+    public function charsAction(Word $word)
+    {
+        $repo = $this->getDoctrine()->getRepository(Word::class);
+        $chars = [];
+        for ($i = 0; $i < mb_strlen($word->getSimple()); $i++) {
+            $chars[] = mb_substr($word->getSimple(), $i, 1);
+        }
+
+        $chars = array_unique($chars);
+        $words = [];
+
+        foreach ($chars as $char) {
+            $words = array_merge($repo->findBy(["simple" => $char]), $words);
+        }
+
+        return ['words' => $words];
     }
 
     /**
@@ -66,6 +116,9 @@ class DictionaryController extends Controller
      */
     public function sentencesAction(Word $word)
     {
-        return ['sentences' => 1];
+        $repo = $this->getDoctrine()->getRepository(Sentence::class);
+        $sentences = $repo->containsChinese($word->getSimple());
+
+        return ['exampleSentences' => $sentences];
     }
 }

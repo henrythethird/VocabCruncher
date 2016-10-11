@@ -2,30 +2,53 @@
 
 {% block body %}
     <h1 class="text-center page-header">中文 Dictionary</h1>
-    {% include 'general/search_bar.html.twig' with {formPath:'dictionary_index'} %}
+    {% include 'general/search_bar.html.twig' with {formPath:'dictionary_index', searchTerm:searchTerm} %}
     <br>
-    <div class="row" style="height: 100%">
-        <div class="col-md-4">
-        {% for result in results %}
-            <div class="dictionaryLine" onclick="showDetails('{{ result.id }}')">
-                <span style="font-size: 150%; white-space: nowrap">{{ result.simple }}</span>
-                <span style="white-space: nowrap">{{ result.pinyin }}</span>
-                {% for meaning in result.meanings %}
-                    <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
-                {% endfor %}
-            </div>
-        {% endfor %}
-        </div>
-        <div class="col-md-8" id="js-center-area">
-        </div>
-    </div>
+    <div id="results" class="row absoluteContainer"></div>
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
 
     <script type="application/javascript">
-        function showDetails(id) {
+        function updateSearch() {
+            var url = '{{ path('dictionary_search') }}';
+            url += '?q=' + encodeURIComponent($('#searchBar').val());
+            url += '&chinese_first=' + encodeURIComponent($('#chineseFirst').val());
+            $.ajax(url).done(function(data) {
+                $('#results').html(data);
+                $('#leftPart').children('.dictionaryLine:eq(0)').click();
+            });
+        }
+
+        $(function() {
+            if ($('#searchBar').val()) {
+                updateSearch();
+            }
+            $('#searchBar').on('input', function() {
+                updateSearch();
+            });
+        });
+
+        $(document).on("click", ".ajaxTab", function() {
+            var url = $(this).attr('data-url');
+            var target  = $($(this).attr('href'));
+
+            console.log($(this).attr('href'));
+            if (target.hasClass("initialized")) return;
+
+            target.addClass("initialized");
+            $.ajax(url).done(function(data) {
+                target.html(data);
+            });
+
+            return false;
+        });
+
+        function showDetails(el, id) {
+            $('.dictionaryLine').removeClass('active');
+            $(el).addClass('active');
+
             var url = '{{ path('dictionary_details', {id: 'foobar'}) }}';
             url = url.replace('foobar', id);
             $.ajax(url).done(function(data) {
@@ -46,10 +69,15 @@
         div.dictionaryLine {
             cursor: pointer;
             border-bottom: 1px solid gray;
+            padding: 3px;
         }
 
         div.dictionaryLine:hover {
             background-color: #eee;
+        }
+
+        div.dictionaryLine.active {
+            background-color: #afd9ee;
         }
     </style>
 {% endblock %}

@@ -1,1 +1,36 @@
-<h1>Stroke</h1>
+
+{% for char in chars %}
+    {% set id = 'hanziWriter' ~ random() %}
+    <div class="writer" char="{{ char }}" id="{{ id }}"></div>
+    <button id="btn-{{ id }}" class="btn btn-primary">Play <i class="glyphicon glyphicon-refresh"></i></button>
+{% endfor %}
+<script>
+    $(function() {
+        $('.writer').each(function() {
+            var id = $(this).attr('id');
+            var writer = new HanziWriter(id, $(this).attr('char'), {
+                width: 400,
+                height: 400,
+                charDataLoader: function(char, onComplete) {
+                    var url = '{{ asset('data/hanzi-writer/all.js') }}';
+                    url = url.replace('all.js', char + '.json');
+                    $.getJSON(url, onComplete);
+                }
+            });
+
+            $('#btn-'+id).click(function() {
+                writer.animateCharacter();
+            });
+        });
+    })
+</script>
+
+<style>
+    .writer {
+        background: white;
+        clear: both;
+        border: 1px solid black;
+        width: 400px;
+        height: 400px;
+    }
+</style>

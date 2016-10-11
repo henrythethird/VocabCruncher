@@ -1,0 +1,9 @@
+{% for result in words %}
+    <div class="dictionaryLine" onclick="showDetails(this, '{{ result.id }}')">
+        <span style="font-size: 150%; white-space: nowrap">{{ result.simple }}</span>
+        <span style="white-space: nowrap">{{ result.pinyin }}</span><br>
+        {% for meaning in result.meanings %}
+            <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
+        {% endfor %}
+    </div>
+{% endfor %}

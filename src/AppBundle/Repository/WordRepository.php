@@ -68,6 +68,16 @@ class WordRepository extends EntityRepository
             ->getResult();
     }
 
+    public function findRelatedWords($searchTerm)
+    {
+        return $this->createQueryBuilder("word")
+            ->where("word.simple LIKE :searchTerm")
+            ->setParameter("searchTerm", "%$searchTerm%")
+            ->orderBy("word.length", "ASC")
+            ->getQuery()
+            ->getResult();
+    }
+
     /**
      * @param $searchTerm
      * @return array

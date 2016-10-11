@@ -18,10 +18,38 @@
     }
 }
 
+#page-wrapper {
+    position: fixed;
+    top: 70px;
+    bottom: 0;
+    overflow-y: auto;
+}
+
 #search-box {
     padding: 15px;
 }
 
 .sidebar ul li {
     border-bottom: 1px solid #e7e7e7;
+}
+
+.absoluteContainer {
+    padding: inherit;
+    position: absolute;
+    left: 0;
+    right: 15px; /* magical */
+    top: 170px;
+    bottom: 20px;
+    overflow: hidden;
+}
+
+.absoluteContainer > div {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.tab-content .tab-pane {
+    border: 1px solid #ddd;
+    border-top-width: 0;
+    padding: 15px;
 }
