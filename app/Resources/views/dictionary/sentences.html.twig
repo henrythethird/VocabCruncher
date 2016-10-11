@@ -1,0 +1,17 @@
+<p>Example Sentences:</p>
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th>Mandarin</th>
+        <th>English</th>
+    </tr>
+    {% for sentence in exampleSentences %}
+        <tr style="cursor: pointer" onclick="window.location.href='{{ path('sentence_show', {'id': sentence.id }) }}'">
+            <td>
+                <span style="font-size: 200%">{{ sentence.mandarin }}</span>
+            </td>
+            <td>
+                {{ sentence.english }}
+            </td>
+        </tr>
+    {% endfor %}
+</table>

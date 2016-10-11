@@ -4,28 +4,35 @@
     <h1 class="text-center page-header">中文 Dictionary</h1>
     {% include 'general/search_bar.html.twig' with {formPath:'dictionary_index'} %}
     <br>
-    <table class="table table-striped table-hover table-bordered">
-        <tr>
-            <th class="text-center">Chinese</th>
-            <th class="text-center">Pinyin</th>
-            <th>Meaning</th>
-        </tr>
+    <div class="row" style="height: 100%">
+        <div class="col-md-4">
         {% for result in results %}
-            <tr style="cursor: pointer" onclick="window.location.href='{{ path('dictionary_details', {'simple': result.simple}) }}'">
-                <td class="text-center">
-                    <div style="font-size: 200%; white-space: nowrap">{{ result.simple }}</div>
-                </td>
-                <td class="text-center">
-                    <div style="white-space: nowrap">{{ result.pinyin }}</div>
-                </td>
-                <td>
-                    {% for meaning in result.meanings %}
-                        <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
-                    {% endfor %}
-                </td>
-            </tr>
+            <div class="dictionaryLine" onclick="showDetails('{{ result.id }}')">
+                <span style="font-size: 150%; white-space: nowrap">{{ result.simple }}</span>
+                <span style="white-space: nowrap">{{ result.pinyin }}</span>
+                {% for meaning in result.meanings %}
+                    <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
+                {% endfor %}
+            </div>
         {% endfor %}
-    </table>
+        </div>
+        <div class="col-md-8" id="js-center-area">
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+    <script type="application/javascript">
+        function showDetails(id) {
+            var url = '{{ path('dictionary_details', {id: 'foobar'}) }}';
+            url = url.replace('foobar', id);
+            $.ajax(url).done(function(data) {
+                $('#js-center-area').html(data);
+            })
+        }
+    </script>
 {% endblock %}
 
 {% block stylesheets %}
@@ -34,6 +41,15 @@
     <style>
         span.meaning {
             margin-right: 5px;
+        }
+
+        div.dictionaryLine {
+            cursor: pointer;
+            border-bottom: 1px solid gray;
+        }
+
+        div.dictionaryLine:hover {
+            background-color: #eee;
         }
     </style>
 {% endblock %}

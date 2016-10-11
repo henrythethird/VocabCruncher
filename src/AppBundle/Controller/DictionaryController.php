@@ -2,7 +2,6 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Sentence;
 use AppBundle\Entity\Word;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -35,23 +34,38 @@ class DictionaryController extends Controller
     }
 
     /**
-     * @Route("/dictionary/details/{simple}", name="dictionary_details")
+     * @Route("/dictionary/details/{id}", name="dictionary_details")
      * @Template("dictionary/details.html.twig")
      */
-    public function detailsAction($simple)
+    public function detailsAction(Word $word)
     {
-        $words = $this->getDoctrine()
-            ->getRepository(Word::class)
-            ->findBySimpleOrComplex($simple);
+        return ['word' => $word];
+    }
 
-        $exampleSentences = $this->getDoctrine()
-            ->getRepository(Sentence::class)
-            ->containsChinese($simple);
+    /**
+     * @Route("/dictionary/stroke/{id}", name="dictionary_stroke")
+     * @Template("dictionary/stroke.html.twig")
+     */
+    public function strokeAction(Word $word)
+    {
+        return ['word' => $word];
+    }
 
-        return [
-            'words' => $words,
-            'simple' => $simple,
-            'exampleSentences' => $exampleSentences
-        ];
+    /**
+     * @Route("/dictionary/words/{id}", name="dictionary_words")
+     * @Template("dictionary/words.html.twig")
+     */
+    public function wordsAction(Word $word)
+    {
+        return ['word' => $word];
+    }
+
+    /**
+     * @Route("/dictionary/sentences/{id}", name="dictionary_sentences")
+     * @Template("dictionary/sentences.html.twig")
+     */
+    public function sentencesAction(Word $word)
+    {
+        return ['sentences' => 1];
     }
 }
