@@ -47,3 +47,14 @@
         <div id="sentences" class="tab-pane"></div>
     </div>
 </div>
+
+<script>
+    $(function() {
+
+        var tabs = $('.absoluteTabs');
+        tabs.css('height', tabs.parent().height() - tabs.position().top + 'px');
+
+        var tabContent = $('.tab-content');
+        tabContent.css('height', tabContent.parent().height() - tabContent.position().top + 'px');
+    });
+</script>

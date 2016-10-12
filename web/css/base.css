@@ -38,7 +38,7 @@
     position: absolute;
     left: 0;
     right: 15px; /* magical */
-    top: 170px;
+    top: 50px;
     bottom: 20px;
     overflow: hidden;
 }
@@ -52,6 +52,8 @@
     border: 1px solid #ddd;
     border-top-width: 0;
     padding: 15px;
+    height: 100%;
+    overflow-y: auto;
 }
 
 #leftPart {
@@ -61,6 +63,7 @@
 
 #js-center-area {
     padding-right: 0;
+    overflow: hidden;
 }
 
 span.meaning {
@@ -88,6 +91,10 @@ div.dictionaryLine:hover {
 div.dictionaryLine.active {
     background-color: #337ab7;
     color: white;
+}
+
+div.absoluteTabs {
+    position: relative;
 }
 
 div.absoluteTabs li.active > a  {
