@@ -53,3 +53,43 @@
     border-top-width: 0;
     padding: 15px;
 }
+
+#leftPart {
+    padding-right: 0;
+    border-right: 1px solid #ddd;
+}
+
+#js-center-area {
+    padding-right: 0;
+}
+
+span.meaning {
+    margin-right: 5px;
+}
+
+div.dictionaryLine {
+    cursor: pointer;
+}
+
+div.dictionaryLine, div.dictionaryHeader {
+    border-bottom: 1px solid #ddd;
+    padding: 3px;
+}
+
+div.dictionaryHeader {
+    background-color: #ddd;
+    font-weight: bold;
+}
+
+div.dictionaryLine:hover {
+    background-color: #eee;
+}
+
+div.dictionaryLine.active {
+    background-color: #337ab7;
+    color: white;
+}
+
+div.absoluteTabs li.active > a  {
+    border-bottom: 1px solid #337ab7 !important;
+}

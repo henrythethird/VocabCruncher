@@ -1,5 +1,13 @@
-<h1><b>{{ word.simple }} [{{ word.complex }}]</b></h1>
-<h2>PY [{{ word.pinyin }}]</h2>
+<h1>
+    <b>{{ word.simple }}</b>
+    {% if word.simple != word.complex %}
+        <b>[{{ word.complex }}]</b>
+    {% endif %}
+</h1>
+<h3>
+    <b style="color: gray">PY</b>
+    <b>{{ word.pinyin }}</b>
+</h3>
 <div class="absoluteTabs">
     <ul class="nav nav-tabs nav-justified">
         <li class="active">
@@ -7,7 +15,7 @@
         </li>
         <li>
             <a href="#stroke" aria-controls="stroke" role="tab" data-toggle="tab" class="ajaxTab"
-               data-url="{{ path('dictionary_stroke', {id: word.id}) }}">Stroke-Order</a>
+               data-url="{{ path('dictionary_stroke', {id: word.id}) }}">Stroke</a>
         </li>
         {% if word.length > 1 %}
             <li>
@@ -17,33 +25,25 @@
         {% endif %}
         <li>
             <a href="#words" aria-controls="words" role="tab" data-toggle="tab" class="ajaxTab"
-               data-url="{{ path('dictionary_words', {id: word.id}) }}">Related Words</a>
+               data-url="{{ path('dictionary_words', {id: word.id}) }}">Words</a>
         </li>
         <li>
             <a href="#sentences" aria-controls="sentences" role="tab" data-toggle="tab" class="ajaxTab"
-               data-url="{{ path('dictionary_sentences', {id: word.id}) }}">Example Sentences</a>
+               data-url="{{ path('dictionary_sentences', {id: word.id}) }}">Sentences</a>
         </li>
     </ul>
 
     <div class="tab-content">
         <div id="dict" class="tab-pane active initialized">
-            <ol>
-                {% for meaning in word.meanings %}
-                <li> {{ meaning.meaning }}</li>
-                {% endfor %}
-            </ol>
+            {% for meaning in word.meanings %}
+            <div>
+                {% if loop.length > 1 %} <b>{{ loop.index }}</b> {% endif %} {{ meaning.meaning }}
+            </div>
+            {% endfor %}
         </div>
-        <div id="chars" class="tab-pane">
-
-        </div>
-        <div id="stroke" class="tab-pane">
-
-        </div>
-        <div id="words" class="tab-pane">
-
-        </div>
-        <div id="sentences" class="tab-pane">
-
-        </div>
+        <div id="chars" class="tab-pane"></div>
+        <div id="stroke" class="tab-pane"></div>
+        <div id="words" class="tab-pane"></div>
+        <div id="sentences" class="tab-pane"></div>
     </div>
 </div>

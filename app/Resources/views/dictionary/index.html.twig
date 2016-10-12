@@ -11,22 +11,41 @@
     {{ parent() }}
 
     <script type="application/javascript">
-        function updateSearch() {
+        var searchBar = $('#searchBar');
+        var chineseFirst = $('#chineseFirst');
+
+        var currentRequest = null;
+        var currentTimeout = null;
+
+        function updateSearch(skipWait) {
             var url = '{{ path('dictionary_search') }}';
-            url += '?q=' + encodeURIComponent($('#searchBar').val());
-            url += '&chinese_first=' + encodeURIComponent($('#chineseFirst').val());
-            $.ajax(url).done(function(data) {
-                $('#results').html(data);
-                $('#leftPart').children('.dictionaryLine:eq(0)').click();
-            });
+            url += '?q=' + encodeURIComponent(searchBar.val());
+            url += '&chinese_first=' + encodeURIComponent(chineseFirst.val());
+
+            if (currentRequest) {
+                currentRequest.abort();
+            }
+
+            if (currentTimeout) {
+                clearTimeout(currentTimeout);
+            }
+            currentTimeout = setTimeout(function() {
+                currentRequest = $.ajax({
+                    url: url,
+                    success: function(data) {
+                        $('#results').html(data);
+                        $('#leftPart').children('.dictionaryLine:eq(0)').click();
+                    }
+                });
+            }, !skipWait ? 500 : 0);
         }
 
         $(function() {
-            if ($('#searchBar').val()) {
-                updateSearch();
+            if (searchBar.val()) {
+                updateSearch(true);
             }
-            $('#searchBar').on('input', function() {
-                updateSearch();
+            searchBar.on('input', function() {
+                updateSearch(false);
             });
         });
 
@@ -56,28 +75,4 @@
             })
         }
     </script>
-{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-
-    <style>
-        span.meaning {
-            margin-right: 5px;
-        }
-
-        div.dictionaryLine {
-            cursor: pointer;
-            border-bottom: 1px solid gray;
-            padding: 3px;
-        }
-
-        div.dictionaryLine:hover {
-            background-color: #eee;
-        }
-
-        div.dictionaryLine.active {
-            background-color: #afd9ee;
-        }
-    </style>
 {% endblock %}

@@ -1,10 +1,19 @@
 <div class="col-md-4" id="leftPart">
+    {% set previous = '' %}
     {% for result in results %}
+        {% if previous != result.simple %}
+            <div class="dictionaryHeader">
+                {{ result.simple }}
+            </div>
+            {% set previous = result.simple %}
+        {% endif %}
         <div class="dictionaryLine" onclick="showDetails(this, '{{ result.id }}')">
             <span style="font-size: 150%; white-space: nowrap">{{ result.simple }}</span>
             <span style="white-space: nowrap">{{ result.pinyin }}</span><br>
             {% for meaning in result.meanings %}
-                <span class="meaning">{{ loop.index }}. {{ meaning }}</span>
+                <span class="meaning">
+                    {% if loop.length > 1 %} <b>{{ loop.index }}</b> {% endif %} {{ meaning }}
+                </span>
             {% endfor %}
         </div>
     {% endfor %}

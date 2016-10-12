@@ -2,7 +2,7 @@
 
 {% block body %}
     <h1 class="text-center page-header">Sentences</h1>
-    {% include 'general/search_bar.html.twig' with {formPath:'sentence_index'} %}
+    {% include 'general/search_bar.html.twig' with {formPath:'sentence_index', searchTerm: ''} %}
     <br>
     <table class="table table-striped">
         {% for sentence in sentences %}
