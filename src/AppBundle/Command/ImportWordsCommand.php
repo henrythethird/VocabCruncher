@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class ImportWordsCommand extends ContainerAwareCommand
 {
-    const BATCH_SIZE = 100;
+    const BATCH_SIZE = 10000;
 
     /**
      * {@inheritdoc}
