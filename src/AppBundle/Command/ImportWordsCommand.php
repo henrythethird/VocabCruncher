@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\File\File;
 
 class ImportWordsCommand extends ContainerAwareCommand
 {
+    const BATCH_SIZE = 100;
+
     /**
      * {@inheritdoc}
      */
@@ -38,7 +40,10 @@ class ImportWordsCommand extends ContainerAwareCommand
         $file = new File($input->getArgument('file'));
 
         $open = $file->openFile();
+
+        $index = 0;
         while (!$open->eof()) {
+            $index++;
             $line = $open->getCurrentLine();
             $parsedArr = $this->parse(trim($line));
 
@@ -58,6 +63,12 @@ class ImportWordsCommand extends ContainerAwareCommand
                 $meaning->setMeaning($english);
                 $meaning->setWord($word);
                 $em->persist($meaning);
+            }
+
+            if ($index % self::BATCH_SIZE == 0) {
+                $output->writeln("Processing next batch...");
+                $em->flush();
+                $output->writeln("batch processed.");
             }
         }
         $em->flush();
