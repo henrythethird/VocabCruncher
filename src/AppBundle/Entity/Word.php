@@ -61,6 +61,12 @@ class Word
     private $pinyinAbbr;
 
     /**
+     * @ORM\Column(type="integer")
+     * @var string
+     */
+    private $frequency;
+
+    /**
      * @ORM\OneToMany(targetEntity="Meaning", mappedBy="word", cascade={"persist"})
      * @ORM\JoinColumn(onDelete="CASCADE")
      * @var ArrayCollection
@@ -86,6 +92,22 @@ class Word
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFrequency()
+    {
+        return $this->frequency;
+    }
+
+    /**
+     * @param int $frequency
+     */
+    public function setFrequency($frequency)
+    {
+        $this->frequency = $frequency;
     }
 
     /**

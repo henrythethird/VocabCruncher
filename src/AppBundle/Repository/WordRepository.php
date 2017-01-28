@@ -62,7 +62,9 @@ class WordRepository extends EntityRepository
         return $this->createQueryBuilder("word")
             ->where("word.simple IN (:searchTerms)")
             ->orWhere("word.complex IN (:searchTerms)")
-            ->orderBy("word.length", "DESC")
+            ->orderBy("word.frequency", "DESC")
+            ->addOrderBy("word.length", "ASC")
+            ->addOrderBy("word.simple", "ASC")
             ->setParameter("searchTerms", $subTerms)
             ->getQuery()
             ->getResult();
@@ -73,7 +75,9 @@ class WordRepository extends EntityRepository
         return $this->createQueryBuilder("word")
             ->where("word.simple LIKE :searchTerm")
             ->setParameter("searchTerm", "%$searchTerm%")
-            ->orderBy("word.length", "ASC")
+            ->orderBy("word.frequency", "DESC")
+            ->addOrderBy("word.length", "ASC")
+            ->addOrderBy("word.simple", "ASC")
             ->getQuery()
             ->getResult();
     }
@@ -88,8 +92,9 @@ class WordRepository extends EntityRepository
             ->where("word.simple LIKE :searchTerm")
             ->orWhere("word.complex LIKE :searchTerm")
             ->orWhere("word.pinyinAbbr LIKE :searchTerm")
-            ->orderBy("word.length")
-            ->addOrderBy("word.simple")
+            ->orderBy("word.frequency", "DESC")
+            ->addOrderBy("word.length", "ASC")
+            ->addOrderBy("word.simple", "ASC")
             ->setParameter("searchTerm", "$searchTerm%")
             ->setMaxResults(self::MAX_SEARCH_RESULTS)
             ->getQuery()
@@ -107,6 +112,9 @@ class WordRepository extends EntityRepository
             ->where("meaning.meaning LIKE :searchTerm")
             ->setParameter("searchTerm", "%$searchTerm%")
             ->setMaxResults(self::MAX_SEARCH_RESULTS)
+            ->addOrderBy("word.frequency", "DESC")
+            ->addOrderBy("word.length", "ASC")
+            ->addOrderBy("word.simple", "ASC")
             ->getQuery()
             ->getResult();
     }
