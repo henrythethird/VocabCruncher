@@ -11,70 +11,7 @@
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
-    <body style="padding-top: 70px; padding-bottom: 70px">
-        <nav class="navbar navbar-default navbar-fixed-top">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle Navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{ path('homepage') }}">VocabCruncher</a>
-                </div>
-                <div id="navbar" class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <span class="glyphicon glyphicon-user"></span>
-                                <span class="glyphicon glyphicon-triangle-bottom"></span>
-                            </a>
-                            <ul class="dropdown-menu">
-                            {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
-                                <li>
-                                    <a>{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}</a>
-                                </li>
-                                <li>
-                                    <a href="{{ path('fos_user_security_logout') }}">
-                                        <span class="glyphicon glyphicon-log-out"></span>
-                                        {{ 'layout.logout'|trans({}, 'FOSUserBundle') }}
-                                    </a>
-                                </li>
-                            {% else %}
-                                <li>
-                                    <a href="{{ path('fos_user_security_login') }}">
-                                        <span class="glyphicon glyphicon-log-in"></span>
-                                        {{ 'layout.login'|trans({}, 'FOSUserBundle') }}
-                                    </a>
-                                </li>
-                            {% endif %}
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="navbar-default sidebar" role="navigation">
-                <div class="sidebar-nav navbar-collapse">
-                    <ul class="nav">
-                        <li id="search-box">
-                            <form class="input-group" action="{{ path('dictionary_index') }}">
-                                <input class="form-control" name="q" type="text" placeholder="Search Dictionary...">
-                                <span class="input-group-btn">
-                                    <button class="form-control btn btn-default" type="submit">
-                                        <span class="glyphicon glyphicon-search"></span>
-                                    </button>
-                                </span>
-                            </form>
-                        </li>
-                        <li><a href="{{ path('homepage') }}"><i class="glyphicon glyphicon-home"></i> Home</a></li>
-                        <li><a href="{{ path('dictionary_index') }}"><i class="glyphicon glyphicon-book"></i> Dictionary</a></li>
-                        <li><a href="{{ path('sentence_index') }}"><i class="glyphicon glyphicon-align-left"></i> Sentences</a></li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
+    <body>
         <div id="page-wrapper" class="container-fluid">
             {% for msg in app.session.flashBag.get('success') %}
                 <div class="alert alert-success">
