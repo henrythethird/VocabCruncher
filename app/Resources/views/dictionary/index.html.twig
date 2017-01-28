@@ -3,7 +3,14 @@
 {% block body %}
     {% include 'general/search_bar.html.twig' with {formPath:'dictionary_index', searchTerm:searchTerm} %}
     <br>
-    <div id="results" class="row absoluteContainer"></div>
+    <div id="results" class="row absoluteContainer">
+        <div class="col-md-4" id="leftPart">
+
+        </div>
+        <div class="col-md-8" id="js-center-area">
+
+        </div>
+    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -12,6 +19,8 @@
     <script type="application/javascript">
         var searchBar = $('#searchBar');
         var chineseFirst = $('#chineseFirst');
+        var leftPart = $('#leftPart');
+        var rightPart = $('#js-center-area');
 
         var currentRequest = null;
         var currentTimeout = null;
@@ -32,8 +41,10 @@
                 currentRequest = $.ajax({
                     url: url,
                     success: function(data) {
-                        $('#results').html(data);
-                        $('#leftPart').children('.dictionaryLine:eq(0)').click();
+                        rightPart.html('');
+                        leftPart.html(data.view);
+                        chineseFirst.bootstrapToggle(data.search_preference ? 'on' : 'off');
+                        leftPart.children('.dictionaryLine:eq(0)').click();
                     }
                 });
             }, !skipWait ? 500 : 0);
@@ -52,7 +63,6 @@
             var url = $(this).attr('data-url');
             var target  = $($(this).attr('href'));
 
-            console.log($(this).attr('href'));
             if (target.hasClass("initialized")) return;
 
             target.addClass("initialized");

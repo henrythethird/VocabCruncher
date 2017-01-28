@@ -5,9 +5,11 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Sentence;
 use AppBundle\Entity\Word;
 use AppBundle\Service\PinyinService;
+use AppBundle\Value\SearchValue;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class DictionaryController extends Controller
@@ -27,7 +29,6 @@ class DictionaryController extends Controller
 
     /**
      * @Route("/dictionary/search", name="dictionary_search")
-     * @Template("dictionary/result.html.twig")
      */
     public function searchAction(Request $request)
     {
@@ -35,17 +36,23 @@ class DictionaryController extends Controller
         $chineseFirst = $request->get('chinese_first', false);
 
         if (empty($searchTerm)) {
-            return ['results' => []];
+            return new JsonResponse(['view' => ""]);
         }
 
         $searchUtil = $this->get("app.search");
 
-        return [
-            'results' => $searchUtil->search(
-                $searchTerm,
-                $request->get('chinese_first', $chineseFirst)
-            ),
-        ];
+        /** @var SearchValue $searchValue */
+        $searchValue = $searchUtil->search(
+            $searchTerm,
+            $request->get('chinese_first', $chineseFirst)
+        );
+
+        return new JsonResponse([
+            'view' => $this->renderView('dictionary/result.html.twig', [
+                'results' => $searchValue->getResults()
+            ]),
+            'search_preference' => $searchValue->getSearchPreference()
+        ]);
     }
 
     /**

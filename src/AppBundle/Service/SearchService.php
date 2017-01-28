@@ -3,6 +3,7 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Word;
+use AppBundle\Value\SearchValue;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
@@ -33,12 +34,14 @@ class SearchService
     /**
      * @param string $searchTerm
      * @param bool $preferChinese
-     * @return array
+     * @return SearchValue
      */
     public function search($searchTerm, $preferChinese = false)
     {
         if ($this->pinyinUtil->containsChinese($searchTerm)) {
-            return $this->chineseOrExplain($searchTerm);
+            return $this->constructChineseSearchValue(
+                $this->chineseOrExplain($searchTerm)
+            );
         }
         if ($preferChinese) {
             return $this->chineseFirst($searchTerm);
@@ -49,7 +52,7 @@ class SearchService
 
     /**
      * @param string $searchTerm
-     * @return array
+     * @return Word[]
      */
     public function chineseOrExplain($searchTerm)
     {
@@ -73,29 +76,43 @@ class SearchService
 
     /**
      * @param string $searchTerm
-     * @return array
+     * @return SearchValue
      */
     public function chineseFirst($searchTerm)
     {
         $result = $this->repository->dictionarySearchChinese($searchTerm);
         if (!empty($result)) {
-            return $result;
+            return $this->constructChineseSearchValue($result);
         }
 
-        return $this->repository->dictionarySearchEnglish($searchTerm);
+        return $this->constructEnglishSearchValue(
+            $this->repository->dictionarySearchEnglish($searchTerm)
+        );
     }
 
     /**
      * @param string $searchTerm
-     * @return array
+     * @return SearchValue
      */
     public function englishFirst($searchTerm)
     {
         $result = $this->repository->dictionarySearchEnglish($searchTerm);
         if (!empty($result)) {
-            return $result;
+            return $this->constructEnglishSearchValue($result);
         }
 
-        return $this->repository->dictionarySearchChinese($searchTerm);
+        return $this->constructChineseSearchValue(
+            $this->repository->dictionarySearchChinese($searchTerm)
+        );
+    }
+
+    private function constructEnglishSearchValue($results)
+    {
+        return new SearchValue($results, SearchValue::PREFER_ENGLISH);
+    }
+
+    private function constructChineseSearchValue($results)
+    {
+        return new SearchValue($results, SearchValue::PREFER_CHINESE);
     }
 }
