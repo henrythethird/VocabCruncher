@@ -33,10 +33,12 @@ class DictionaryController extends Controller
     public function searchAction(Request $request)
     {
         $searchTerm = $request->get('q');
-        $chineseFirst = $request->get('chinese_first', false);
+        $chineseFirst = $request->get('chinese_first', "false") == "false" ? false : true;
 
         if (empty($searchTerm)) {
-            return new JsonResponse(['view' => ""]);
+            return new JsonResponse([
+                'view' => $searchTerm
+            ]);
         }
 
         $searchUtil = $this->get("app.search");
@@ -44,7 +46,7 @@ class DictionaryController extends Controller
         /** @var SearchValue $searchValue */
         $searchValue = $searchUtil->search(
             $searchTerm,
-            $request->get('chinese_first', $chineseFirst)
+            $chineseFirst
         );
 
         return new JsonResponse([
