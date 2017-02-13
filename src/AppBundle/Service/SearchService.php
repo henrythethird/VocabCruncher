@@ -3,14 +3,16 @@
 namespace AppBundle\Service;
 
 use AppBundle\Entity\Word;
+use AppBundle\Repository\WordRepository;
 use AppBundle\Value\SearchValue;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
+use Elastica\Query;
+use FOS\ElasticaBundle\Finder\TransformedFinder;
 
 class SearchService
 {
     /**
-     * @var EntityRepository
+     * @var WordRepository
      */
     private $repository;
 
@@ -24,11 +26,17 @@ class SearchService
      */
     private $explain;
 
-    public function __construct(EntityManager $entityManager, ExplainService $explain)
+    /**
+     * @var TransformedFinder
+     */
+    private $englishWordSearch;
+
+    public function __construct(EntityManager $entityManager, ExplainService $explain, TransformedFinder $englishSearch)
     {
         $this->repository = $entityManager->getRepository(Word::class);
         $this->explain = $explain;
         $this->pinyinUtil = new PinyinService();
+        $this->englishWordSearch = $englishSearch;
     }
 
     /**
@@ -56,7 +64,7 @@ class SearchService
      */
     public function chineseOrExplain($searchTerm)
     {
-        $result = $this->repository->dictionarySearchChinese($searchTerm);
+        $result = $this->searchChinese($searchTerm);
         if (!empty($result)) {
             return $result;
         }
@@ -80,13 +88,13 @@ class SearchService
      */
     public function chineseFirst($searchTerm)
     {
-        $result = $this->repository->dictionarySearchChinese($searchTerm);
+        $result = $this->searchChinese($searchTerm);
         if (!empty($result)) {
             return $this->constructChineseSearchValue($result);
         }
 
         return $this->constructEnglishSearchValue(
-            $this->repository->dictionarySearchEnglish($searchTerm)
+            $this->searchEnglish($searchTerm)
         );
     }
 
@@ -96,13 +104,13 @@ class SearchService
      */
     public function englishFirst($searchTerm)
     {
-        $result = $this->repository->dictionarySearchEnglish($searchTerm);
+        $result = $this->searchEnglish($searchTerm);
         if (!empty($result)) {
             return $this->constructEnglishSearchValue($result);
         }
 
         return $this->constructChineseSearchValue(
-            $this->repository->dictionarySearchChinese($searchTerm)
+            $this->searchChinese($searchTerm)
         );
     }
 
@@ -114,5 +122,17 @@ class SearchService
     private function constructChineseSearchValue($results)
     {
         return new SearchValue($results, SearchValue::PREFER_CHINESE);
+    }
+
+    private function searchEnglish($searchTerm)
+    {
+        $query = Query::create("*$searchTerm*");
+        $query->addSort(["_score" => ["order" => "DESC"]]);
+        return $this->englishWordSearch->find($query);
+    }
+
+    private function searchChinese($searchTerm)
+    {
+        return $this->repository->dictionarySearchChinese($searchTerm);
     }
 }

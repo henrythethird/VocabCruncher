@@ -62,9 +62,9 @@ class Word
 
     /**
      * @ORM\Column(type="integer")
-     * @var string
+     * @var integer
      */
-    private $frequency;
+    private $frequency = 0;
 
     /**
      * @ORM\OneToMany(targetEntity="Meaning", mappedBy="word", cascade={"persist"})

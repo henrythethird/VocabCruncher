@@ -30,7 +30,8 @@
         "incenteev/composer-parameter-handler": "^2.0",
         "friendsofsymfony/user-bundle": "~2.0@dev",
         "symfony/css-selector": "^3.2",
-        "symfony/dom-crawler": "^3.2"
+        "symfony/dom-crawler": "^3.2",
+        "friendsofsymfony/elastica-bundle": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",

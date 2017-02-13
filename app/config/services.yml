@@ -8,7 +8,7 @@ services:
         class: AppBundle\Service\PinyinService
     app.search:
         class: AppBundle\Service\SearchService
-        arguments: ["@doctrine.orm.entity_manager", "@app.explain"]
+        arguments: ["@doctrine.orm.entity_manager", "@app.explain", "@fos_elastica.finder.app.word"]
     app.compile:
         class: AppBundle\Service\SentenceCompileService
         arguments: ["@doctrine.orm.entity_manager", "@app.explain"]
