@@ -126,9 +126,7 @@ class SearchService
 
     private function searchEnglish($searchTerm)
     {
-        $query = Query::create("*$searchTerm*");
-        $query->addSort(["_score" => ["order" => "DESC"]]);
-        return $this->englishWordSearch->find($query);
+        return $this->repository->dictionarySearchEnglish($searchTerm);
     }
 
     private function searchChinese($searchTerm)
